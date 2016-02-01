@@ -5,9 +5,10 @@ from lxml.etree import tostring
 import requests
 from BeautifulSoup import BeautifulSoup
 import re
+import matplotlib
 
-brand = "toyota"
-model = "corolla"
+brand = "mazda"
+model = "3"
 
 header = {'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.9; rv:32.0) Gecko/20100101 Firefox/32.0',}
 url_base = "http://www.hasznaltauto.hu/auto/" + brand + "/" + model + "/"
@@ -29,7 +30,11 @@ for i in range(num_of_pages):
     prices = tree.xpath('//*[contains(concat(" ", normalize-space(@class), " "), " arsor ")]')
     years = tree.xpath('//*[contains(concat(" ", normalize-space(@class), " "), " talalati_lista_infosor ")]')
     for idx, price in enumerate(prices):
-        price_string = price[0].text[:-3]
+        try:
+            price_string = price[0].text[:-3]
+        except IndexError:
+            print "Ar nelkul"
+            continue
         try:
             act_price = int(re.sub("\.", '', price_string))
         except ValueError:
