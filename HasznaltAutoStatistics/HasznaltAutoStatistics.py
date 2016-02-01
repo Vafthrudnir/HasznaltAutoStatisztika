@@ -5,7 +5,7 @@ from lxml.etree import tostring
 import requests
 from BeautifulSoup import BeautifulSoup
 import re
-import matplotlib
+import matplotlib.pyplot as plt
 
 brand = "mazda"
 model = "3"
@@ -19,6 +19,8 @@ tree = html.fromstring(page.content)
 num_of_pages = int(tree.xpath('//*[@class="oldalszam"][last()]')[0].text)
 
 database = []
+age = []
+cost = []
 
 for i in range(num_of_pages):
     print i + 1, "/", num_of_pages
@@ -33,12 +35,12 @@ for i in range(num_of_pages):
         try:
             price_string = price[0].text[:-3]
         except IndexError:
-            print "Ar nelkul"
+            #print "Ar nelkul"
             continue
         try:
             act_price = int(re.sub("\.", '', price_string))
         except ValueError:
-            print "Akcios"
+            #print "Akcios"
             continue
         soup = BeautifulSoup(tostring(years[idx]))
         pattern = "(\d{4}|\d{4}\/\d*)&#160;"
@@ -46,5 +48,11 @@ for i in range(num_of_pages):
 
         database += [(act_year, act_price)]
 
-for item in database:
-    print item
+        age.append(int(act_year[:4]))
+        cost.append(act_price)
+        
+#for item in database:
+#    print item
+
+plt.scatter(age, cost)
+plt.show()
